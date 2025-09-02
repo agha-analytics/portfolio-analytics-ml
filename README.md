@@ -1,6 +1,7 @@
 # Data Analytics & Machine Learning Portfolio
 
-Welcome! This repository showcases end-to-end analytics and machine learning projects that solve real business problems — with a strong focus on **retail, forecasting, and customer analytics**.
+Welcome! 
+This repository showcases end-to-end analytics and machine learning projects that solve real business problems, with a strong focus on **retail, forecasting, and customer analytics**.
 
 ---
 
