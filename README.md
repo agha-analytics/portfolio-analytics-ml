@@ -32,14 +32,27 @@ Welcome! This repository showcases end-to-end analytics and machine learning pro
 ---
 
 ## 👤 About Me
+
 Hi, I’m **Agha Al Agha** 👋  
 
 I’m a **PMP-certified professional and Data Analyst** with a B.S. in Information Technology (Data Analytics).  
-My background combines **retail sales experience** with hands-on expertise in **data analytics, forecasting, and machine learning**. I love turning data into clear, actionable insights that improve customer experience and drive measurable business outcomes.
+My background combines **retail sales experience** with hands-on expertise in **data analytics, forecasting, and machine learning**.  
+
+I love turning raw data into clear, actionable insights that help organizations make better decisions, improve customer satisfaction, and achieve measurable business outcomes.  
+
+Beyond technical work, I bring strong **project management skills**, the ability to **communicate insights to non-technical stakeholders**, and a proven track record of aligning data projects with business goals.  
+
+I’m passionate about continuous learning — from experimenting with machine learning models to creating dashboards that bring data to life — and I enjoy bridging the gap between **business strategy** and **technical execution**.  
 
 📍 Orlando, FL  
 📫 **mahfk2003@outlook.com**  
-🌐 LinkedIn: *(add your link here)*
+🌐 [LinkedIn])  
+
+---
+
+### 🎯 Career Goals
+I am currently seeking opportunities in **Data Analytics and Machine Learning** where I can combine my PMP background, sales expertise, and technical skills to deliver business value and drive innovation.  
+
 
 ---
 
