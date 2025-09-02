@@ -43,7 +43,7 @@ I love turning raw data into clear, actionable insights that help organizations 
 
 Beyond technical work, I bring strong **project management skills**, the ability to **communicate insights to non-technical stakeholders**, and a proven track record of aligning data projects with business goals.  
 
-I’m passionate about continuous learning — from experimenting with machine learning models to creating dashboards that bring data to life — and I enjoy bridging the gap between **business strategy** and **technical execution**.  
+I’m passionate about continuous learning, from experimenting with machine learning models to creating dashboards that bring data to life,  and I enjoy bridging the gap between **business strategy** and **technical execution**.  
 
 📍 Orlando, FL  
 📫 **mahfk2003@outlook.com**  
