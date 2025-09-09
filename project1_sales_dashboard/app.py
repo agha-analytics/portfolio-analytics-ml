@@ -1,4 +1,4 @@
-# app.py (optimized)
+# app.py 
 import requests
 import os
 from datetime import datetime
@@ -348,7 +348,7 @@ def main() -> None:
         st.subheader("Forecast (simple moving-average projection)")
         render_simple_forecast(view, window=8, horizon=12)
 
-       # -------- AI Insights tab --------
+       # -------- AI tab --------
     with tab_ai:
         st.header("AI Insights")
 
