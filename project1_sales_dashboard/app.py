@@ -304,6 +304,7 @@ def main() -> None:
 
 
 
+
     with st.spinner("Loading data..."):
         df = _merged_frame(sales_fp, stores_fp, features_fp)
 
