@@ -1,32 +1,12 @@
-# app.py 
+# app.py (optimized)
 import requests
 import os
 from datetime import datetime
 import streamlit as st
 import json
 import pandas as pd
-_orig_read_csv = pd.read_csv
-
-def _safe_read_csv(*args, **kwargs):
-    try:
-        return _orig_read_csv(*args, **kwargs)
-    except ValueError as e:
-        msg = str(e)
-        if "Missing column provided to 'parse_dates'" in msg:
-            # drop parse_dates and try again
-            kwargs.pop("parse_dates", None)
-            df = _orig_read_csv(*args, **kwargs)
-            # parse any case-insensitive 'date' column if present
-            for c in df.columns:
-                if c.lower() == "date":
-                    df[c] = pd.to_datetime(df[c], errors="coerce")
-                    break
-            return df
-        raise
-
-# Monkey-patch pandas for the rest of this process
-pd.read_csv = _safe_read_csv
 import os
+import pandas as pd
 import plotly.express as px
 
 from ui_filters import sidebar_filters, apply_filters
@@ -86,28 +66,32 @@ def _verify_file(path: str, label: str) -> None:
 
 @st.cache_data(show_spinner=False)
 def _load_csv(path: str, label: str) -> pd.DataFrame:
-    """Read CSV once and cache; parse 'Date' if present."""
+    """Read CSV once and cache; safely parse 'Date' only if present."""
     _verify_file(path, label)
-    # parse_dates handles conversion faster than a separate to_datetime pass
-    parse_cols = ["Date"] if "features" in path or "sales" in path else None
-    return pd.read_csv(path, parse_dates=parse_cols)
+    try:
+        return pd.read_csv(path, parse_dates=["Date"])
+    except Exception:
+        df = pd.read_csv(path)
+        if "Date" in df.columns:
+            df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        return df
 
 @st.cache_data(show_spinner=False)
 def _merged_frame(sales_path: str, stores_path: str, features_path: str) -> pd.DataFrame:
-    """Create the merged dataframe once and cache."""
+    """Load the three CSVs and return one merged frame."""
     sales = _load_csv(sales_path, "Sales data")
     stores = _load_csv(stores_path, "Stores data")
     features = _load_csv(features_path, "Features data")
 
-    # Ensure Date is datetime (in case parse_dates didn't run)
+    # Ensure Date is datetime where present
     if "Date" in sales.columns:
         sales["Date"] = pd.to_datetime(sales["Date"], errors="coerce")
     if "Date" in features.columns:
         features["Date"] = pd.to_datetime(features["Date"], errors="coerce")
 
+    # Standard Walmart schema merge: sales -> stores; then join features on Store+Date
     df = sales.merge(stores, on="Store", how="left").merge(features, on=["Store", "Date"], how="left")
     return df
-
 
 # ----------------------------- Top bar -----------------------------
 def render_topbar(name_role: str = "Agha Alagha - Data Analyst") -> None:
@@ -318,6 +302,8 @@ def main() -> None:
     stores_fp   = _abs_path("data", "stores.csv")
     features_fp = _abs_path("data", "features.csv")
 
+
+
     with st.spinner("Loading data..."):
         df = _merged_frame(sales_fp, stores_fp, features_fp)
 
@@ -368,7 +354,7 @@ def main() -> None:
         st.subheader("Forecast (simple moving-average projection)")
         render_simple_forecast(view, window=8, horizon=12)
 
-       # -------- AI tab --------
+       # -------- AI Insights tab --------
     with tab_ai:
         st.header("AI Insights")
 
