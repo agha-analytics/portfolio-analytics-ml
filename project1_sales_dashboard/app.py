@@ -457,4 +457,10 @@ def _run_app():
         st.exception(e)
 
 if __name__ == "__main__":
-    _run_app()
+    try:
+        main()
+    except Exception:
+        import streamlit as st, traceback
+        st.title("Startup error")
+        st.error("Your app crashed during startup. Here’s the traceback:")
+        st.code("".join(traceback.format_exc()))
