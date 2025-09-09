@@ -5,8 +5,28 @@ from datetime import datetime
 import streamlit as st
 import json
 import pandas as pd
+_orig_read_csv = pd.read_csv
+
+def _safe_read_csv(*args, **kwargs):
+    try:
+        return _orig_read_csv(*args, **kwargs)
+    except ValueError as e:
+        msg = str(e)
+        if "Missing column provided to 'parse_dates'" in msg:
+            # drop parse_dates and try again
+            kwargs.pop("parse_dates", None)
+            df = _orig_read_csv(*args, **kwargs)
+            # parse any case-insensitive 'date' column if present
+            for c in df.columns:
+                if c.lower() == "date":
+                    df[c] = pd.to_datetime(df[c], errors="coerce")
+                    break
+            return df
+        raise
+
+# Monkey-patch pandas for the rest of this process
+pd.read_csv = _safe_read_csv
 import os
-import pandas as pd
 import plotly.express as px
 
 from ui_filters import sidebar_filters, apply_filters
