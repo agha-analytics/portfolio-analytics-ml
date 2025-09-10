@@ -1,3 +1,31 @@
+# ---- BOOTSTRAP: surface startup errors on Streamlit Cloud ----
+import os, sys, traceback
+from pathlib import Path
+import streamlit as st
+
+st.set_page_config(page_title="Sales & Customer Analytics", layout="wide")
+st.write("🔧 Booting…")
+
+ROOT = Path(__file__).resolve().parent
+st.write("CWD:", os.getcwd())
+st.write("APP ROOT:", ROOT.as_posix())
+try:
+    st.write("Files in app root:", [p.name for p in ROOT.iterdir()])
+except Exception:
+    pass
+
+try:
+    # (leave your real imports below this line; we’ll catch any error)
+    # ----------------------------------------------------------------
+    # >>> your existing imports start here (leave them as they are) <<<
+    # ----------------------------------------------------------------
+except Exception as e:
+    st.error("❌ Startup failed")
+    st.code("".join(traceback.format_exception(e)))
+    # re-raise so it also lands in the Cloud logs
+    raise
+# ---- END BOOTSTRAP ----
+
 # app.py (optimized)
 import os
 from datetime import datetime
