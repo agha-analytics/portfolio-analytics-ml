@@ -5,9 +5,16 @@ from datetime import datetime
 import streamlit as st
 import json
 import pandas as pd
+import pathlib
 import os
 import pandas as pd
 import plotly.express as px
+
+DATA_DIR = pathlib.Path(__file__).resolve().parent / "data"
+
+@st.cache_data(show_spinner=False)
+def load_csv(name: str):
+    return pd.read_csv(DATA_DIR / name)
 
 from ui_filters import sidebar_filters, apply_filters
 
