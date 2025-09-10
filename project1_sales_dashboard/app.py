@@ -1,14 +1,25 @@
 # app.py (optimized)
-import requests
 import os
 from datetime import datetime
 import streamlit as st
-import json
-import pandas as pd
 import pathlib
+import json
 import os
 import pandas as pd
 import plotly.express as px
+
+from pathlib import Path
+import pandas as pd
+
+max_rows  = 200_000     # cap the number of rows we’ll pull into small preview/forecast
+max_chars = 200_000     # cap the size of JSON context we build for lightweight UI bits
+
+APP_DIR = Path(__file__).resolve().parent           # .../project1_sales_dashboard
+DATA_DIR = APP_DIR / "data"                         # .../project1_sales_dashboard/data
+
+def load_csv(filename: str) -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / filename)
+
 
 DATA_DIR = pathlib.Path(__file__).resolve().parent / "data"
 
@@ -218,23 +229,6 @@ def render_simple_forecast(view: pd.DataFrame, window: int = 8, horizon: int = 1
 
 
 # --------------------------------- App ---------------------------------
-def _get_api_key() -> str | None:
-    """
-    Return the OpenAI API key from Streamlit secrets or env var.
-    Put your key in .streamlit/secrets.toml as:
-      OPENAI_API_KEY="sk-..."
-    or in the environment.
-    """
-    return st.secrets.get("OPENAI_API_KEY", None) if hasattr(st, "secrets") else os.getenv("OPENAI_API_KEY")
-
-
-def _frame_context(view: pd.DataFrame, max_rows: int = 200, max_chars: int = 6000) -> str:
-    """
-    Build a compact JSON context from the filtered dataframe without creating
-    invalid JSON. We shrink by reducing sample size, not by truncating strings.
-    """
-    if view.empty:
-        return json.dumps({"note": "No rows in the current filtered view."})
 
     # Basic schema + range
     schema = {c: str(view[c].dtype) for c in view.columns}
@@ -253,7 +247,7 @@ def _frame_context(view: pd.DataFrame, max_rows: int = 200, max_chars: int = 600
         samp[col] = samp[col].round(2)
 
     # Start with up to max_rows records; shrink if needed to meet max_chars
-    hi = min(max_rows, len(samp))
+    hi = len(samp)
     lo = 1
     best_json = None
     best_records = []
@@ -402,56 +396,6 @@ def main() -> None:
                 )
 
         st.markdown("---")
-
-        # --- Ask a specific question (OpenAI) ---
-        st.subheader("Ask a specific question")
-        api_key = _get_api_key()
-        if not api_key:
-            st.warning("Add your OpenAI API key to **.streamlit/secrets.toml** as `OPENAI_API_KEY` (or set the environment variable) to enable this feature.")
-        else:
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                user_q = st.text_input("Ask the AI any Question about your data", placeholder="e.g., Which store types grew fastest in the last quarter?")
-
-            if st.button("Generate Insights", type="primary", use_container_width=False):
-                if not user_q.strip():
-                    st.info("Please type a question first.")
-                elif view.empty:
-                    st.info("No data in the current filters to analyze.")
-                else:
-                    context = _frame_context(view)
-                    import requests
-                    headers = {
-                        "Authorization": f"Bearer {api_key}",
-                        "Content-Type": "application/json",
-                    }
-                    # NOTE: Keep behavior same; define a default model to avoid NameError if not set elsewhere
-                    model = "gpt-4o-mini"
-
-                    payload = {
-                        "model": model,
-                        "messages": [
-                            {"role": "system",
-                             "content": (
-                                 "You are a helpful retail analytics assistant. "
-                                 "Use the provided JSON context to answer the user's question with numbers, "
-                                 "short bullet points, and avoid inventing data that is not present."
-                             )},
-                            {"role": "user",
-                             "content": f"DATA CONTEXT (JSON):\n{context}\n\nQUESTION:\n{user_q}"}
-                        ],
-                        "temperature": 0.2,
-                    }
-                    with st.spinner("Thinking..."):
-                        try:
-                            resp = requests.post("https://api.openai.com/v1/chat/completions",
-                                                 headers=headers, json=payload, timeout=60)
-                            resp.raise_for_status()
-                            content = resp.json()["choices"][0]["message"]["content"]
-                            st.markdown("#### AI Answer")
-                            st.write(content)
-                        except Exception as e:
-                            st.error(f"OpenAI request failed: {e}")
 
 # ---------------------------- runner ----------------------------
 def _run_app():
