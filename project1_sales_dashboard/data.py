@@ -9,15 +9,15 @@ DATA_DIR = Path(__file__).parent / "data"
 def load_data() -> pd.DataFrame:
     # --- Read source CSVs (robust for mixed dtypes) ---
     sales = pd.read_csv(
-        DATA_DIR / "sales data-set.csv",
+        DATA_DIR / "sales.csv",
         low_memory=False,
     )
     features = pd.read_csv(
-        DATA_DIR / "Features data set.csv",
+        DATA_DIR / "features.csv",
         low_memory=False,
     )
     stores = pd.read_csv(
-        DATA_DIR / "stores data-set.csv",
+        DATA_DIR / "stores.csv",
         low_memory=False,
     )
 

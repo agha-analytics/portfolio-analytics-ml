@@ -39,6 +39,5 @@ def try_read(name):
         st.code(traceback.format_exc())
 
 st.subheader('CSV read checks')
-for fname in ['sales.csv','stores.csv','features.csv',
-              'sales data-set.csv','stores data-set.csv','Features data set.csv']:
+for fname in ['sales.csv', 'stores.csv', 'features.csv']:
     try_read(fname)
