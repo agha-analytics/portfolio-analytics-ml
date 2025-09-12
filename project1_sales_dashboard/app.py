@@ -4,21 +4,15 @@ from pathlib import Path
 import streamlit as st
 
 st.set_page_config(page_title="Sales & Customer Analytics", layout="wide")
-st.write("🔧 Booting…")
 
 ROOT = Path(__file__).resolve().parent
-st.write("CWD:", os.getcwd())
-st.write("APP ROOT:", ROOT.as_posix())
-try:
-    st.write("Files in app root:", [p.name for p in ROOT.iterdir()])
-except Exception:
-    pass
 
 try:
     # (leave your real imports below this line; we’ll catch any error)
-    # ----------------------------------------------------------------
-    # >>> your existing imports start here (leave them as they are) <<<
-    # ----------------------------------------------------------------
+    import pandas as pd
+    import plotly.express as px
+    from ui_filters import sidebar_filters, apply_filters
+    # add any other imports here as needed
 except Exception as e:
     st.error("❌ Startup failed")
     st.code("".join(traceback.format_exception(e)))
@@ -331,7 +325,13 @@ def main() -> None:
     stores_fp   = _abs_path("data", "stores.csv")
     features_fp = _abs_path("data", "features.csv")
 
-
+    try:
+        sales    = pd.read_csv(sales_fp,    low_memory=False)
+        features = pd.read_csv(features_fp, low_memory=False)
+        stores   = pd.read_csv(stores_fp,   low_memory=False)
+    except Exception as e:
+        st.error(f"Failed to load data: {e}")
+        st.stop()
 
 
     with st.spinner("Loading data..."):
