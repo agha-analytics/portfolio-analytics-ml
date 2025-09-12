@@ -1,5 +1,2 @@
-New-Item -ItemType Directory -Path .streamlit -Force | Out-Null
-@'
 [server]
 fileWatcherType = "none"
-'@ | Out-File -Encoding ascii .streamlit\config.toml -Force
