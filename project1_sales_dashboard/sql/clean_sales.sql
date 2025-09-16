@@ -57,13 +57,13 @@ JOIN (
     WHERE rn > 1
 ) d ON s.id = d.id;
 
--- 5. Verify cleanup (should return 0 rows)
+-- 5. Verify cleanup (return 0 rows)
 SELECT Store, Dept, Date, COUNT(*) AS cnt
 FROM sales
 GROUP BY Store, Dept, Date
 HAVING COUNT(*) > 1;
 
--- 6. (Optional) Add unique constraint to prevent future duplicates
+-- 6. Add unique constraint to prevent future duplicates
 ALTER TABLE sales
 ADD UNIQUE KEY uq_sales_store_dept_date (Store, Dept, Date);
 
