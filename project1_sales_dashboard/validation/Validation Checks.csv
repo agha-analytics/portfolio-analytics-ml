@@ -1,0 +1,23 @@
+check_name,detail,value,expected,status
+Row count - sales,NULL,104145,NULL,INFO
+Row count - stores,NULL,45,NULL,INFO
+Row count - features,NULL,8190,NULL,INFO
+"Duplicates in sales (Store,Dept,Date)",NULL,0,0,PASS
+Duplicates in stores (Store),NULL,0,0,PASS
+"Duplicates in features (Store,Date)",NULL,0,0,PASS
+Null key columns in sales,Store OR Dept OR Date,0,0,PASS
+Null key columns in stores,Store,0,0,PASS
+Null key columns in features,Store OR Date,0,0,PASS
+Weekly_Sales nulls,NULL,0,0,PASS
+Weekly_Sales negatives,Count of returns (allowed),232,NULL,INFO
+IsHoliday invalid values,Expect 0/1 only,0,0,PASS
+Orphan sales.Store (missing in stores),NULL,0,0,PASS
+"Sales without features (Store,Date missing)",NULL,0,0,PASS
+Weekly_Sales MIN,NULL,-1098,NULL,INFO
+Weekly_Sales AVG,NULL,17216.6392,NULL,INFO
+Weekly_Sales MAX,NULL,693099.36,NULL,INFO
+Sales date range - MIN,NULL,2/5/2010,NULL,INFO
+Sales date range - MAX,NULL,10/26/2012,NULL,INFO
+Constraint exists: sales.uq_sales_store_dept_date,NULL,1,1,PASS
+Constraint exists: features.uq_features_store_date,NULL,1,1,PASS
+Constraint exists: stores PRIMARY KEY(Store),NULL,1,1,PASS
